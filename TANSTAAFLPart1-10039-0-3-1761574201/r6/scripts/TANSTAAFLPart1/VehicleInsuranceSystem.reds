@@ -110,6 +110,9 @@ public class VehicleInsuranceSystem extends ScriptableSystem {
 	public func OnMountedInDriverSeatChanged(value: Bool, veh: ref<VehicleObject>) -> Bool {
 		//FTLog("PlayerMountedAsDriver: " + ToString(value));
 		if value {
+			if !IsDefined(veh) || !veh.IsPlayerVehicle() || !GameInstance.GetVehicleSystem(veh.GetGame()).IsVehiclePlayerUnlocked(veh.GetRecordID()) {
+				return false;
+			};
 			//this.m_distanceTravelled = 0.0; //resets in on bump event
 			//this.m_bumpsCount = 0;
 			this.m_vehicleDefBB = veh.GetBlackboard();
@@ -601,31 +604,33 @@ public class VehicleInsuranceSystem extends ScriptableSystem {
 //}
 
 @wrapMethod(VehicleObject)
-protected cb func OnVehicleBumpEvent(evt: ref<VehicleBumpEvent>) -> Bool {
-	let vis: ref<VehicleInsuranceSystem> = VehicleInsuranceSystem.GetInstance(this);
-	
-	wrappedMethod(evt);
+	protected cb func OnVehicleBumpEvent(evt: ref<VehicleBumpEvent>) -> Bool {
+		let vis: ref<VehicleInsuranceSystem> = VehicleInsuranceSystem.GetInstance(this);
+		let playerVehicleUnlocked: Bool = false;
+		
+		wrappedMethod(evt);
 	
 	//FTLog("VehicleObject.OnVehicleBumpEvent: " + GetLocalizedTextByKey(TweakDBInterface.GetVehicleRecord(this.GetRecordID()).DisplayName()));
 	//FTLog("hit by: " + GetLocalizedTextByKey(TweakDBInterface.GetVehicleRecord(evt.hitVehicle.GetRecordID()).DisplayName()));
 
-	if this.IsPlayerDriver() {
-		//player vehicle was hit by another vehicle... never happens ?!?
-		//nope, never happens...
-		//FTLog("player vehicle was hit by another vehicle");
-	} else {
+		if this.IsPlayerDriver() {
+			//player vehicle was hit by another vehicle... never happens ?!?
+			//nope, never happens...
+			//FTLog("player vehicle was hit by another vehicle");
+		} else {
 		//if player is a driver and not hitting owned car
 		//added panic driving check because...
 		//evt.hitVehicle seems to be instigator while this obj is receiver, but...
 		//it seems like if the player vehicle is involved, the player is always considered as an instigator
 		//upd: added chasing target check to exclude car chase missions
-		if evt.hitVehicle.IsPlayerDriver() && !this.IsPlayerVehicle() {
-			if !this.IsPerformingPanicDriving() && !this.IsChasingTarget() && !this.IsInRaceQuest() {
-				vis.HandleVehicleBumpEvent(this, evt);
+			if evt.hitVehicle.IsPlayerDriver() && !this.IsPlayerVehicle() {
+				playerVehicleUnlocked = IsDefined(evt.hitVehicle) && evt.hitVehicle.IsPlayerVehicle() && GameInstance.GetVehicleSystem(evt.hitVehicle.GetGame()).IsVehiclePlayerUnlocked(evt.hitVehicle.GetRecordID());
+				if playerVehicleUnlocked && !this.IsPerformingPanicDriving() && !this.IsChasingTarget() && !this.IsInRaceQuest() {
+					vis.HandleVehicleBumpEvent(this, evt);
+				};
 			};
 		};
-	};
-}
+	}
 
 @addMethod(VehicleObject)
 private func IsInRaceQuest() -> Bool {
