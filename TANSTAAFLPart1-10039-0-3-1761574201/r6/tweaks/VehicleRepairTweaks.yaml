@@ -1,0 +1,27 @@
+#turned off to be handled by the mod
+Vehicle.summon_setup.silentRepairTreshold: 100.0 # vanilla is 60.0
+Vehicle.summon_setup.repairCostMultiplier: 0.0 # vanilla is 1.0
+
+#generic cooldown timer to repair destroyed vehicle, not sure yet we can set it on per vehicle basis
+Vehicle.summon_setup.repairCooldownMax: 300.0 # vanilla is 300.0
+
+#can try changing those to prevent too frequent vehicle despawns/resummons
+#Vehicle.summon_setup.despawnDistance: 250.0 #250.0
+#Vehicle.summon_setup.spawnDistanceMin: 30.0 #30.0
+#Vehicle.summon_setup.spawnDistanceMax: 100.0 #100.0
+#Vehicle.summon_setup.summonDistanceMin: 25.0 #25.0
+#Vehicle.summon_setup.summonDistanceMax: 250.0 #250.0
+#Vehicle.summon_setup.playerVicinity: 50.0 #50.0
+
+#can try this in case of troubles
+#Vehicle.summon_setup.forceDespawnOnResummon: true # vanilla is false
+
+#summon calc logic
+#Vehicle.summon_setup.summonPointsOnLaneFilterRange: 10.0 #10.0
+#Vehicle.summon_setup.maxLaneSearchIterations: 10 #10
+#Vehicle.summon_setup.spawnRaycastVisibilityTest: false #false
+#Vehicle.summon_setup.spawnOverlapVehicleTest: true #true
+#Vehicle.summon_setup.spawnOverlapVehicleTestRadius: 2.5 #2.5
+#Vehicle.summon_setup.fallbackSpawnMaxDistance: 100.0 #100.0
+#Vehicle.summon_setup.simpleSpawnBehindPlayerDistanceMax: 50.0 #50.0
+#Vehicle.summon_setup.simpleSpawnDistanceMin: 5.0 #5.0
